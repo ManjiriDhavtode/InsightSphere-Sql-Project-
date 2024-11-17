@@ -1,0 +1,71 @@
+SHOW COLUMNS FROM CUSTOMERS;
+SHOW COLUMNS FROM ORDERS; 
+SHOW COLUMNS FROM PRODUCTS;
+SELECT * FROM PRODUCTS;
+SELECT * FROM CUSTOMERS;
+SELECT * FROM ORDERS;
+
+SHOW COLUMNS FROM DEPARTMENTS;
+SHOW COLUMNS FROM EMPLOYEES;
+
+SHOW COLUMNS FROM DOCTORS;
+SHOW COLUMNS FROM PATIENTS;
+
+
+-- List the customers who have placed more than one order, along with the total number of orders placed by each customer.
+SELECT NAME,COUNT(ORDERID) AS TOTAL_ORDER
+FROM CUSTOMERS JOIN ORDERS ON CUSTOMERS.CUSTOMERID=ORDERS.CUSTOMERID GROUP BY NAME HAVING TOTAL_ORDER=1 ORDER BY TOTAL_ORDER;
+SELECT * FROM ORDERS;
+
+-- Display the top 3 products with the highest total sales (calculated by multiplying the TotalAmount from the ORDERS table by the quantity of products ordered
+ALTER TABLE ORDERS ADD Quantity INT DEFAULT 1;
+UPDATE ORDERS SET Quantity = 2 WHERE OrderID = 101;
+UPDATE ORDERS SET Quantity = 1 WHERE OrderID = 102;
+UPDATE ORDERS SET Quantity = 3 WHERE OrderID = 103;
+SELECT PRODUCTNAME ,SUM(TOTALAMOUNT*QUANTITY) AS HIGHEST_TOTAL_SALES 
+FROM PRODUCTS JOIN ORDERS
+ON ORDERS.PRODUCTID=PRODUCTS.PRODUCTID
+GROUP BY PRODUCTNAME ORDER BY  HIGHEST_TOTAL_SALES DESC LIMIT 3 ;
+
+-- Find the total number of orders placed by each customer, including those who have not placed any orders.
+SELECT NAME,ORDERNAME,COUNT(ORDERID) FROM CUSTOMERS JOIN ORDERS ON CUSTOMERS.CUSTOMERID=ORDERS.CUSTOMERID GROUP BY NAME;
+
+-- Find the second-highest salary from the EMPLOYEES table.
+USE UNITY;
+SHOW COLUMNS FROM EMPLOYEES;
+SELECT MAX(PERFORMANCESCORE) FROM EMPLOYEES WHERE PERFORMANCESCORE < (SELECT MAX(PERFORMANCESCORE) FROM EMPLOYEES);
+
+-- Get the average performance score of employees per department.
+SHOW COLUMNS FROM EMPLOYEES;
+SHOW COLUMNS FROM DEPARTMENTS;
+SELECT DEPARTMENTNAME, AVG(PERFORMANCESCORE) FROM EMPLOYEES 
+JOIN DEPARTMENTS
+ON EMPLOYEES.DEPARTMENTID=DEPARTMENTS.DEPARTMENTID  GROUP BY  DEPARTMENTNAME;
+
+-- Retrieve all products that have been ordered, including product details, along with the total number of orders for each product.
+SELECT * FROM PRODUCTS;
+SELECT * FROM ORDERS;
+SELECT PRODUCTNAME,COUNT(ORDERID) AS TOTAL_NUMBER_OF_ORDERS FROM PRODUCTS
+JOIN ORDERS ON PRODUCTS.PRODUCTID=ORDERS.PRODUCTID GROUP BY PRODUCTNAME ;
+
+-- Find the employees who do not belong to any department, along with their performance scores.
+SELECT NAME,PERFORMANCESCORE FROM EMPLOYEES WHERE DEPARTMENTID IS NULL;
+SELECT * FROM EMPLOYEES;
+
+-- Show the employee names and department names for employees whose performance score is greater than 80 and belong to the 'Sales' department.
+SELECT NAME,DEPARTMENTNAME FROM EMPLOYEES JOIN DEPARTMENTS
+ON EMPLOYEES.DEPARTMENTID=DEPARTMENTS.DEPARTMENTID  WHERE PERFORMANCESCORE>80 AND DEPARTMENTNAME='SALES';
+
+-- List the departments with no employees assigned to them.
+SHOW COLUMNS FROM DEPARTMENTS;
+SELECT D.DepartmentID, D.DepartmentName FROM DEPARTMENTS D LEFT JOIN  EMPLOYEES E ON D.DepartmentID = E.DepartmentID WHERE E.DepartmentID IS NULL;
+    
+-- Calculate the total revenue generated from each product category by multiplying the TotalAmount in the ORDERS table with the corresponding product category.
+
+-- Retrieve the names of patients who are being treated by doctors specializing in 'Cardiology' or 'Oncology'.
+SELECT * FROM PATIENTS;
+SELECT * FROM DOCTORS;
+SELECT NAME,SPECIALIZATION FROM PATIENTS JOIN DOCTORS  ON PATIENTS.DOCTORID=DOCTORS.DOCTORID 
+WHERE SPECIALIZATION='Cardiology' or 'Oncology';
+
+
